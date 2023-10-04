@@ -4,14 +4,19 @@ import {
   Flex,
   Text,
   useColorModeValue,
+  Image,
 } from "@chakra-ui/react";
 import Card from "components/card/Card.js";
-
+import RobotArm from "assets/img/dashboards/robotArm.gif"
+import Rail from "assets/img/dashboards/rail.gif"
+import StopRail1 from "assets/img/dashboards/stopArm1.png"
+import StopRail2 from "assets/img/dashboards/stopArm2.png"
 export default function TotalSpent(props) {
   const { productCount, productCountB, defectiveCount, ...rest } = props;
 
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const [cameraColor, setCameraColor] = useState("teal"); // 초기 색상을 teal로 설정
+  const [currentImage, setCurrentImage] = useState(StopRail1);
 
   useEffect(() => {
     if (productCount > 0) {
@@ -56,6 +61,40 @@ export default function TotalSpent(props) {
     // 여기에서 원하는 동작을 수행합니다.
   };
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setCurrentImage(RobotArm);
+    }, 1000); // 1초 후에 RobotArm 이미지로 변경
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (currentImage === RobotArm) {
+      const timeout = setTimeout(() => {
+        setCurrentImage(StopRail2);
+      }, 9700); // 1초 후에 StopRail2 이미지로 변경
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [currentImage]);
+
+  useEffect(() => {
+    if (currentImage === StopRail2) {
+      const timeout = setTimeout(() => {
+        setCurrentImage(Rail);
+      }, 1000); // 1초 후에 Rail 이미지로 변경
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [currentImage]);
+
   return (
     <Card
       justifyContent="center"
@@ -89,6 +128,9 @@ export default function TotalSpent(props) {
         >
           카메라
         </Button>
+      </Flex>
+      <Flex align="center" w="100%" px="15px" py="10px">
+        <Image src={currentImage} alt="Current Image" />
       </Flex>
     </Card>
   );

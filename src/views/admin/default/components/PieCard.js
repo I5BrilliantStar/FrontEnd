@@ -1,23 +1,85 @@
-// Chakra imports
+// 필요한 import문 추가
+import React, { useState, useEffect } from "react";
 import { Box, Flex, Text, Select, useColorModeValue } from "@chakra-ui/react";
-// Custom components
 import Card from "components/card/Card.js";
 import PieChart from "components/charts/PieChart";
-import { pieChartData, pieChartOptions } from "../../default/charts";
 import { VSeparator } from "components/separator/Separator";
-import React from "react";
+import axios from "axios"; // axios 추가
 
+// PieChart 데이터 및 옵션
+const pieChartOptions = {
+  labels: ["정상품", "불량품", "Empty"],
+  colors: ["#4318FF", "#6AD2FF", "#EFF4FB"],
+  chart: {
+    width: "50px",
+  },
+  states: {
+    hover: {
+      filter: {
+        type: "none",
+      },
+    },
+  },
+  legend: {
+    show: false,
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  hover: { mode: null },
+  plotOptions: {
+    donut: {
+      expandOnClick: false,
+      donut: {
+        labels: {
+          show: false,
+        },
+      },
+    },
+  },
+  fill: {
+    colors: ["#4318FF", "#6AD2FF", "#EFF4FB"],
+  },
+  tooltip: {
+    enabled: true,
+    theme: "dark",
+  },
+};
 
 export default function Conversion(props) {
   const { ...rest } = props;
 
-  // Chakra Color Mode
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const cardColor = useColorModeValue("white", "navy.700");
   const cardShadow = useColorModeValue(
     "0px 18px 40px rgba(112, 144, 176, 0.12)",
     "unset"
   );
+
+  // 상품 데이터를 저장할 상태 변수
+  const [productData, setProductData] = useState({
+    quantity: 0,
+    fquantity: 0,
+  });
+
+  // 데이터를 가져오는 함수
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://10.10.10.111:8080/product/");
+      const data = response.data; // API 응답 데이터
+
+      // 상품 데이터 업데이트
+      setProductData(data);
+    } catch (error) {
+      console.error("데이터를 불러오는 데 실패했습니다.", error);
+    }
+  };
+
+  // 컴포넌트가 마운트될 때 데이터 가져오기
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <Card p='20px' align='center' direction='column' w='100%' {...rest}>
       <Flex
@@ -41,12 +103,14 @@ export default function Conversion(props) {
         </Select>
       </Flex>
 
+      {/* PieChart 컴포넌트에 동적으로 받아온 데이터 전달 */}
       <PieChart
         h='100%'
         w='100%'
-        chartData={pieChartData}
+        chartData={[productData.quantity, productData.fquantity, 0]}
         chartOptions={pieChartOptions}
       />
+
       <Card
         bg={cardColor}
         flexDirection='row'
@@ -56,37 +120,7 @@ export default function Conversion(props) {
         px='20px'
         mt='15px'
         mx='auto'>
-        <Flex direction='column' py='5px'>
-          <Flex align='center'>
-            <Box h='8px' w='8px' bg='brand.500' borderRadius='50%' me='4px' />
-            <Text
-              fontSize='xs'
-              color='secondaryGray.600'
-              fontWeight='700'
-              mb='5px'>
-              정상품
-            </Text>
-          </Flex>
-          <Text fontSize='lg' color={textColor} fontWeight='700'>
-            50%
-          </Text>
-        </Flex>
-        <VSeparator mx={{ base: "60px", xl: "60px", "2xl": "60px" }} />
-        <Flex direction='column' py='5px' me='10px'>
-          <Flex align='center'>
-            <Box h='8px' w='8px' bg='#6AD2FF' borderRadius='50%' me='4px' />
-            <Text
-              fontSize='xs'
-              color='secondaryGray.600'
-              fontWeight='700'
-              mb='5px'>
-              불량품
-            </Text>
-          </Flex>
-          <Text fontSize='lg' color={textColor} fontWeight='700'>
-            25%
-          </Text>
-        </Flex>
+        {/* 내용 */}
       </Card>
     </Card>
   );

@@ -27,6 +27,7 @@ import DailyTraffic from "views/admin/default/components/DailyTraffic";
 import PieCard from "views/admin/default/components/PieCard";
 import { Fragment } from "react";
 import Charts from "./charts";
+import WebSocket from './components/WebSocket';
 
 
 import { pieChartData, pieChartOptions } from "views/admin/default/charts";
@@ -309,6 +310,7 @@ export default function UserReports() {
           </PieCard>
         </SimpleGrid>
       </SimpleGrid>
+      
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
         
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
@@ -323,8 +325,10 @@ export default function UserReports() {
           <Button onClick={handleProductRecognition}>A박스 개수 +1</Button>
           <Button onClick={handleProductRecognitionB}>B박스 개수 +1</Button>
           <Button onClick={handleDefectiveRecognition}>불량품 개수 +1</Button>
+          <WebSocket></WebSocket>
         </SimpleGrid>
       </SimpleGrid>
     </Box>
+    
   );
 }

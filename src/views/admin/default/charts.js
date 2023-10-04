@@ -1,11 +1,5 @@
 import { useState } from "react";
 
-
-// Daily Traffic Dashboards Default
-
-
-
-
 export const barChartDataDailyTraffic = [
   {
     name: "Daily Traffic",
@@ -215,7 +209,7 @@ export const barChartOptionsConsumption = {
 };
 
 export const pieChartOptions = {
-  labels: ["test02", "test01", "Empty"],
+  labels: ["test00", "test01", "Empty"],
   colors: ["#4318FF", "#6AD2FF", "#EFF4FB"],
   chart: {
     width: "50px",

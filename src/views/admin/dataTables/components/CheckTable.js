@@ -24,6 +24,8 @@ import Menu from "components/menu/MainMenu";
 import ProductEditModal from "./ProductEditModal";
 import axios from "axios";
 
+export let totalResult = 0;
+
 export default function CheckTable() {
   const columnsData = useMemo(
     () => [
@@ -40,6 +42,10 @@ export default function CheckTable() {
         accessor: "quantity",
       },
       {
+        Header: "FQUANTITY",
+        accessor: "fquantity",
+      },
+      {
         Header: "DATE",
         accessor: "date",
       },
@@ -47,10 +53,18 @@ export default function CheckTable() {
     []
   );
 
+  const formatPrice = (price) => {
+    const formatter = new Intl.NumberFormat("ko-KR", {
+      style: "currency",
+      currency: "KRW",
+    });
+    return formatter.format(price);
+  };
+
   // 데이터를 가져오는 함수
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://10.10.10.111:8080/your-api-endpoint"); // API 엔드포인트를 수정하세요.
+      const response = await axios.get("http://10.10.10.111:8080/product/"); // API 엔드포인트를 수정하세요.
       setTableData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -62,24 +76,24 @@ export default function CheckTable() {
     fetchData();
   }, []); 
 
-  const [tableData, setTableData] = useState([
-    {
-      name: "테스트 상품 1",
-      price: 100,
-      quantity: 10,
-      date: "2023-09-13",
-    },
-    {
-      name: "테스트 상품 2",
-      price: 200,
-      quantity: 20,
-      date: "2023-09-14",
-    },
-    // 더 많은 더미 상품 데이터를 추가할 수 있습니다.
-  ]);
+  const [tableData, setTableData] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
+
+  useEffect(() => {
+    fetchData();
+
+    // 데이터를 가져온 후 각 상품의 총 가격을 계산하고 합산합니다.
+    const calculatedTotalPrice = tableData.reduce((total, product) => {
+      const productPrice = (product.quantity - product.fquantity) * product.price;
+      return total + productPrice;
+    }, 0);
+    
+    totalResult = calculatedTotalPrice;
+    setTotalPrice(calculatedTotalPrice); // 총 가격 상태 변수 업데이트
+  }, [tableData]);
 
   const tableInstance = useTable(
     {
@@ -104,28 +118,36 @@ export default function CheckTable() {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [editedProduct, setEditedProduct] = useState({}); // 수정된 데이터를 관리하는 상태
 
-  const handleProductEdit = (updatedProductData) => {
-    // 수정된 데이터를 새로운 배열로 만듭니다.
+
+  const handleProductEdit = async (updatedProductData) => {
+    try {
+      const response = await axios.put(
+        `http://10.10.10.111:8080/product/${updatedProductData.id}`,
+        updatedProductData
+      );
+
+      if (response.status === 200) {
+        console.log("상품 수정 성공!");
+      } else {
+        console.error("상품 수정 실패");
+      }
+    } catch (error) {
+      console.error("상품 수정 오류:", error);
+    }
+
+  
     const updatedTableData = tableData.map((product) => {
-      if (product.name === updatedProductData.name) {
-        return {
-          ...product,
-          price: updatedProductData.price,
-          quantity: updatedProductData.quantity,
-          date: updatedProductData.date,
-        };
+      if (product.id === updatedProductData.id) {
+        return updatedProductData;
       }
       return product;
     });
-  
-    // 새로운 배열을 상태로 설정합니다.
+
     setTableData(updatedTableData);
     setIsEditModalOpen(false);
   };
 
-  // onClose 함수 정의
   const handleCloseModal = () => {
     setIsEditModalOpen(false);
     setSelectedProduct(null);
@@ -138,10 +160,7 @@ export default function CheckTable() {
 
   const deleteSelectedRows = async (productId) => {
     try {
-      // 선택한 상품의 ID를 사용하여 백엔드에서 해당 상품을 삭제합니다.
       await axios.delete(`http://10.10.10.111:8080/product/${productId}`);
-      
-      // 삭제가 성공하면 프론트엔드에서도 해당 상품을 삭제합니다.
       const updatedTableData = tableData.filter((row) => row.id !== productId);
       setTableData(updatedTableData);
     } catch (error) {
@@ -163,10 +182,12 @@ export default function CheckTable() {
           fontWeight="700"
           lineHeight="100%"
         >
-          Check Table
+          Check Table {formatPrice(totalPrice)}
         </Text>
         <Menu />
       </Flex>
+      <Flex align="center"> {/* 새로운 Flex 컨테이너 */}
+  </Flex>
       <Flex justify="space-between" align="center">
         <Table {...getTableProps()} variant="simple" color="gray.500" mb="24px">
           <Thead>
@@ -226,6 +247,12 @@ export default function CheckTable() {
                           {cell.value}
                         </Text>
                       );
+                    } else if (cell.column.Header === "FQUANTITY") {
+                      data = (
+                        <Text color={textColor} fontSize="sm" fontWeight="700">
+                          {cell.value}
+                        </Text>
+                      );
                     } else if (cell.column.Header === "DATE") {
                       data = (
                         <Text color={textColor} fontSize="sm" fontWeight="700">
@@ -255,20 +282,18 @@ export default function CheckTable() {
                       수정
                     </Button>
                     <Button
-  onClick={() => deleteSelectedRows(row.original.id)} // 상품의 ID를 전달
-  colorScheme="red"
-  size="sm"
->
-  삭제
-</Button>
-
+                      onClick={() => deleteSelectedRows(row.original.id)}
+                      colorScheme="red"
+                      size="sm"
+                    >
+                      삭제
+                    </Button>
                   </Td>
                 </Tr>
               );
             })}
           </Tbody>
         </Table>
-        {/* 팝업 컴포넌트 */}
         <ProductEditModal
           isOpen={isEditModalOpen}
           onClose={handleCloseModal}

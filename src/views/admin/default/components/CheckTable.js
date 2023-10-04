@@ -78,9 +78,6 @@ export default function CheckTable() {
     }
   };
 
-  
-  
-
   useEffect(() => {
     fetchData();
   }, []);
