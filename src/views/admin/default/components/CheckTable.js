@@ -182,6 +182,8 @@ export default function CheckTable() {
       w="100%"
       px="0px"
       overflowX={{ sm: "scroll", lg: "hidden" }}
+      overflowY="auto" // 스크롤바 추가
+      maxHeight="400px" // 최대 높이 설정
     >
       <Flex px="25px" justify="space-between" mb="20px" align="center">
         <Text

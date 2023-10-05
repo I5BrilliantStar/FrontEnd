@@ -172,7 +172,7 @@ export default function WarehouseTable({ productCount, productCountB, defectiveC
     >
       <Flex px="25px" justify="space-between" mb="10px" align="center">
         <Text color={textColor} fontSize="22px" fontWeight="700" lineHeight="100%">
-           Table
+           Complex Table
         </Text>
         <Menu />
       </Flex>

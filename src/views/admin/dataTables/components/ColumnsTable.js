@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Flex,
   Table,
@@ -18,6 +18,8 @@ import Card from "components/card/Card"; // 실제 경로에 맞게 수정해야
 export default function ChatTable() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const tableRef = useRef(null);
+  const inputRef = useRef(null);
 
   const sendMessage = () => {
     if (newMessage.trim() === "") return;
@@ -27,52 +29,90 @@ export default function ChatTable() {
     setNewMessage("");
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  };
+
+  useEffect(() => {
+    // 새 메시지가 추가될 때마다 스크롤을 아래로 이동
+    if (tableRef.current) {
+      tableRef.current.scrollTop = tableRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    // 페이지가 로드될 때 입력 칸에 포커스를 설정
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
+  const handleTabKeyPress = (event) => {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      inputRef.current.focus();
+    }
+  };
+
   return (
     <Card
       direction="column"
       w="100%"
-      p="20px" // 패딩 추가
-      overflowX={{ sm: "scroll", lg: "hidden" }}
+      p="0" // 패딩을 0으로 설정하여 내용을 조절
+      overflow="hidden" // 내용이 넘치면 스크롤바 표시
+      maxHeight="400px"
+      position="relative" // 상대 위치 지정
     >
-      <Flex
-        px="25px"
-        justify="space-between"
-        mb="20px"
-        align="center"
-         // 제목과 구분하기 위해 테두리 추가
+      <div
+        style={{
+          position: "sticky",
+          top: "0",
+          background: "white",
+          padding: "20px",
+          zIndex: "1", // 다른 내용 위에 레이어 표시
+          borderBottom: "1px solid #e2e8f0", // 구분선 추가
+        }}
       >
-      
-      </Flex>
-      <Table variant="simple" color="gray.500" mb="24px">
-        <Tbody>
-          {/* 데이터 부분을 비웠습니다 */}
-        </Tbody>
-      </Table>
-      <Flex direction="column">
-        <Flex mb="10px">
+        {/* 메시지 입력란과 보내기 버튼 */}
+        <Flex>
           <Input
+            ref={inputRef} // ref를 설정하여 포커스를 받을 수 있게 함
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
+            onKeyPress={handleKeyPress} // 엔터 키를 감지
+            onKeyDown={handleTabKeyPress} // 탭 키를 감지하여 포커스 설정
             placeholder="메시지를 입력하세요..."
-            mr="10px" // 입력 상자에 여백 추가
-            flex="1" // 입력 상자가 확장되고 남은 공간을 차지할 수 있도록 설정
+            flex="1"
           />
           <Button
             onClick={sendMessage}
-            bgColor="teal.400" // 버튼의 배경색 변경
-            color="white" // 버튼 텍스트 색상 변경
+            bgColor="teal.400"
+            color="white"
+            ml="10px"
           >
             보내기
           </Button>
         </Flex>
-      </Flex>
-      {messages.map((message, index) => (
-        <div key={index} textAlign="left" mt="10px"> {/* 메시지 왼쪽 정렬 및 상단 여백 추가 */}
-          <Text fontSize="14px" bgColor="teal.100" p="10px" borderRadius="5px">
-            {message.text}
-          </Text>
-        </div>
-      ))}
+      </div>
+      <div
+        style={{
+          overflowY: "scroll",
+          height: "100%", // 스크롤 영역을 최대 높이로 설정
+        }}
+        ref={tableRef}
+      >
+        <Table variant="simple" color="gray.500">
+          <Tbody>
+            {messages.map((message, index) => (
+              <Tr key={index}>
+                <Td>{message.text}</Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </div>
     </Card>
   );
 }
