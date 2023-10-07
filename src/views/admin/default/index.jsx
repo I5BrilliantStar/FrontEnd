@@ -303,7 +303,13 @@ export default function UserReports() {
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
         <CheckTable columnsData={columnsDataCheck} tableData={tableDataCheck} />
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
-          <DailyTraffic chartData={chartData} chartOptions={pieChartOptions} />
+        <ComplexTable 
+        columnsData={columnsDataComplex} 
+        tableData={tableDataComplex} 
+        productCount={productCount} 
+        defectiveCount={defectiveCount}
+        productCountB={productCountB}
+        />
           <PieCard>
             <Chart productCount = {productCount}
             productCountB = {productCountB}/>
@@ -314,14 +320,7 @@ export default function UserReports() {
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
         
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
-        <ComplexTable 
-        columnsData={columnsDataComplex} 
-        tableData={tableDataComplex} 
-        productCount={productCount} 
-        defectiveCount={defectiveCount}
-        productCountB={productCountB}
         
-        />
           <Button onClick={handleProductRecognition}>A박스 개수 +1</Button>
           <Button onClick={handleProductRecognitionB}>B박스 개수 +1</Button>
           <Button onClick={handleDefectiveRecognition}>불량품 개수 +1</Button>

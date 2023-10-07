@@ -215,7 +215,7 @@ export default function TotalSpent(props) {
         </Text>
       </Flex>
       <Flex align="center" w="100%" px="15px" py="10px">
-        <Button
+{/*         <Button
           colorScheme={cameraColor}
           onClick={() => {
             if (cameraColor === "teal") {
@@ -226,7 +226,7 @@ export default function TotalSpent(props) {
           isDisabled={cameraColor === "teal"}
         >
           카메라
-        </Button>
+        </Button> */}
       </Flex>
       <Flex align="center" w="100%" px="15px" py="10px">
         <Image src={currentImage} alt="Current Image" />

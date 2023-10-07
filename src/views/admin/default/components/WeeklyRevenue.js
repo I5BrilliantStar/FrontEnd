@@ -106,7 +106,20 @@ export default function TotalSpent(props) {
           lineHeight="100%"
         >
           AICamera
-        </Text>
+          </Text>
+          <Button
+               backgroundColor="brand.500"
+               color="white"
+               fontSize="sm"
+               fontWeight="100"
+               mt="4px"
+               mb="20px" // 여기에서 버튼과 하단 간격을 조절할 수 있습니다.
+               _hover={{ backgroundColor: "brand.600" }}
+               onClick={fetchImage ? handleCameraOff : handleCameraOn}
+               size="md"
+             >
+              {fetchImage ? "OFF" : "ON"}
+            </Button>
       </Flex>
       <Flex justify="space-between" ps="0px" pe="20px" pt="5px">
         <Flex align="center" w="100%">
@@ -136,18 +149,7 @@ export default function TotalSpent(props) {
       <Flex w="100%" flexDirection={{ base: "column", lg: "row" }}>
         <Flex flexDirection="column" me="20px" mt="28px">
           <Flex align="center" mb="20px">
-            <Button
-               backgroundColor="brand.500"
-               color="white"
-               fontSize="sm"
-               fontWeight="500"
-               mt="4px"
-               mb="20px" // 여기에서 버튼과 하단 간격을 조절할 수 있습니다.
-               _hover={{ backgroundColor: "brand.600" }}
-               onClick={fetchImage ? handleCameraOff : handleCameraOn}
-             >
-              {fetchImage ? "Stop Camera" : "Start Camera"}
-            </Button>
+            
           </Flex>
         </Flex>
       </Flex>
