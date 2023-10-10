@@ -124,7 +124,7 @@ export default function TotalSpent(props) {
       <Flex justify="space-between" ps="0px" pe="20px" pt="5px">
         <Flex align="center" w="100%">
           <div className="TotalSpent">
-            {data.qr_image ? (
+            {fetchImage==true && data.qr_image ? (
               <img
               src={"data:image/jpeg;base64," + data.qr_image}
               alt="Video Stream"

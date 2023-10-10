@@ -78,9 +78,9 @@ export default function CheckTable() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   const [tableData, setTableData] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -90,18 +90,29 @@ export default function CheckTable() {
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
 
+  
   useEffect(() => {
-    fetchData();
-
-    // 데이터를 가져온 후 각 상품의 총 가격을 계산하고 합산합니다.
-    const calculatedTotalPrice = tableData.reduce((total, product) => {
-      const productPrice = (product.quantity - product.fquantity) * product.price;
-      return total + productPrice;
-    }, 0);
-    
-    totalResult = calculatedTotalPrice;
-    setTotalPrice(calculatedTotalPrice); // 총 가격 상태 변수 업데이트
-  }, [tableData]);
+    const fetchDataAndCalculateTotalPrice = async () => {
+      try {
+        const response = await axios.get("http://10.10.10.111:8080/product/");
+        const data = response.data;
+        setTableData(data);
+  
+        // 데이터를 가져온 후 각 상품의 총 가격을 계산하고 합산합니다.
+        const calculatedTotalPrice = data.reduce((total, product) => {
+          const productPrice = (product.quantity - product.fquantity) * product.price;
+          return total + productPrice;
+        }, 0);
+  
+        totalResult = calculatedTotalPrice;
+        setTotalPrice(calculatedTotalPrice); // 총 가격 상태 변수 업데이트
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    fetchDataAndCalculateTotalPrice();
+  }, []); // 빈 배열로 설정하여 한 번만 실행되도록 합니다.
   
   const tableInstance = useTable(
     {
