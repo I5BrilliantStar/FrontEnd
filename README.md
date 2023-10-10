@@ -11,9 +11,7 @@
 <p>&nbsp;</p>
 
 
-Get started and build your dream web app with Horizon UI, the most trendiest &
-innovative Open Source Admin Template for Chakra UI & React!
-
+위의 템플릿을 기반으로 대시보드 페이지를 작성했습니다.
 ---
 
 ### Introduction
