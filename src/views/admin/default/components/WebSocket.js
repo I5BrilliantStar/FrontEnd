@@ -46,16 +46,18 @@ class WebSocketExample extends Component {
   render() {
     return (
       <div>
-        <h1>WebSocket Example</h1>
-        <div>
-          <p>서버에서 받은 메시지: {this.state.message}</p>
+        {/* <h1>WebSocket Example</h1> */}
+        {/* <div>
+          {this.state.message && (
+            <p>서버에서 받은 메시지: {this.state.message}</p>
+          )}
           <input
             type="text"
             value={this.state.inputMessage}
             onChange={e => this.setState({ inputMessage: e.target.value })}
           />
           <button onClick={this.sendMessage}>메시지 보내기</button>
-        </div>
+        </div> */}
       </div>
     );
   }

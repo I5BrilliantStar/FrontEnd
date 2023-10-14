@@ -207,12 +207,12 @@ export default function WarehouseTable({ productCount, productCountB, defectiveC
                     );
                   } else if (cell.column.Header === "Progress") {
                     const progress = cell.value;
-                    let status = "Approved";
-                    let colorScheme = "green";
+                    let status = "Disable";
+                    let colorScheme = "red";
 
                     if (progress < 80) {
-                      status = "Disable";
-                      colorScheme = "red";
+                      status = "Approved";
+                      colorScheme = "green";
                     } else if (progress < 100) {
                       status = "Warning";
                       colorScheme = "orange";
