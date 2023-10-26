@@ -129,7 +129,7 @@ export default function TotalSpent(props) {
               src={"data:image/jpeg;base64," + data.qr_image}
               alt="Video Stream"
               style={{
-                maxHeight: "430px", // camoff.png 이미지의 높이와 동일하게 설정
+                maxHeight: "230px", // camoff.png 이미지의 높이와 동일하게 설정
                 width: "auto", // 가로 너비는 자동으로 조정
                 display: "block",
                 margin: "0 auto",
